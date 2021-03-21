@@ -6,10 +6,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.text.MessageFormat;
 
-/**
- *
- * @author stephen.obi
- */
+
 @Repository
 public class ValidationRepository {
 
@@ -26,7 +23,6 @@ public class ValidationRepository {
         return entityManager.createQuery(sqlQuery).getResultList().isEmpty();
     }
 
-
     public boolean isUnique(String tableName, String columnName, Object value) {
         String sqlQuery = "select e from  " + tableName + " e where LOWER(e." + columnName + ") = LOWER(:value)";
         return entityManager.createQuery(sqlQuery)
@@ -34,20 +30,6 @@ public class ValidationRepository {
                 .getResultList()
                 .isEmpty();
     }
-
-    public boolean isUnique(Class<?> clazz, Long id, String columnName, Object value) {
-        String sqlQuery = "select e from  " + clazz.getSimpleName() + " e where e.id != :id and LOWER(e." + columnName + ") = LOWER(:value)";
-        return !entityManager.createQuery(sqlQuery)
-                .setParameter("id", id)
-                .setParameter("value", value)
-                .getResultList()
-                .stream().findFirst().isPresent();
-    }
-
-
-    
-    
-  
 
     public boolean isExist(String tableName, String columnName, Object value) {
         String sqlQuery = MessageFormat.format("select e from  {0} e where LOWER(e.{1}) = LOWER(:value)", tableName, columnName);

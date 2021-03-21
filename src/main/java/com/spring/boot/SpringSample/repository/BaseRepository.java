@@ -105,8 +105,6 @@ public class BaseRepository {
         return typeQuery.getResultList();
     }
 
-
-
     public <T> List<T> findAllBy(Class<T> classz, String columnName, Object value) {
         String sqlQuery = "select e from  " + classz.getSimpleName() + " e where LOWER(e." + columnName
                 + ") = LOWER(:value)";
@@ -115,19 +113,6 @@ public class BaseRepository {
         return typeQuery.getResultList();
     }
 
-    public <T, V, K> List<T> findAllBy(Class<T> classz, V columnName, K value) {
-        String sqlQuery = "select e from  " + classz.getSimpleName() + " e where LOWER(e." + columnName
-                + ") = LOWER(:value)";
-        TypedQuery<T> typeQuery = em.createQuery(sqlQuery, classz).setParameter("value", value);
-        return typeQuery.getResultList();
-    }
-
-    public <T, V, K> T findOneBy(Class<T> classz, V columnName, K value) {
-        String sqlQuery = "select e from  " + classz.getSimpleName() + " e where LOWER(e." + columnName
-                + ") = LOWER(:value)";
-        TypedQuery<T> typeQuery = em.createQuery(sqlQuery, classz).setParameter("value", value);
-        return typeQuery.getSingleResult();
-    }
 
     public <T, V, K> Optional<T> findOneByOptional(Class<T> classz, V columnName, K value) {
         String sqlQuery = "select e from  " + classz.getSimpleName() + " e where LOWER(e." + columnName
@@ -150,31 +135,6 @@ public class BaseRepository {
         filter.forEach(typeQuery::setParameter);
 
         return Optional.ofNullable(typeQuery.getSingleResult());
-    }
-
-    public <T> Page<T> findAllByOr(Class<T> classz, Map<String, Object> filter, PaginationRequest page) {
-        AtomicReference<String> sqlQuery = new AtomicReference<>();
-        sqlQuery.set("select e from  " + classz.getSimpleName() + " e " + (filter.isEmpty() ? "" : "where "));
-
-        filter.keySet().stream().forEach(i -> sqlQuery.set(sqlQuery.get() + " " + i + " = :" + i + " OR"));
-
-        sqlQuery.set(filter.isEmpty() ? sqlQuery.get() : sqlQuery.get().substring(0, sqlQuery.get().length() - 3));
-
-        TypedQuery<Long> countQuery = em.createQuery(sqlQuery.get().replace("select e from", "select count(e) from"),
-                Long.class);
-        TypedQuery<T> typeQuery = em.createQuery(sqlQuery.get(), classz);
-
-        filter.forEach(typeQuery::setParameter);
-        filter.forEach(countQuery::setParameter);
-
-        log.info("SLQ: {}", sqlQuery.get());
-        Long contentSize = countQuery.getSingleResult();
-        page.setSize(page.getSize() == 0 ? (contentSize.intValue() == 0 ? 1 : contentSize.intValue()) : page.getSize());
-
-        typeQuery.setFirstResult((page.getPage() - 1) * page.getSize()).setMaxResults(page.getSize());
-
-        return new PageImpl<>(typeQuery.getResultList(), PageRequest.of(page.getPage() - 1, page.getSize()),
-                contentSize);
     }
 
     //The filter map object takes care of both OR, AND & LIKE; 

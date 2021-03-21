@@ -11,8 +11,6 @@ public class ValidationService {
 
     private final ValidationRepository repo;
 
-
-
     public boolean isValidId(String tableName, long id) {
         return repo.IsValidId(tableName, id);
     }

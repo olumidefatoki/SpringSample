@@ -22,8 +22,8 @@ public class FacultyController {
     private final FacultyService service;
 
     @PostMapping(path = "")
-    public ResponseEntity<ApiResponse<FacultyResponse>> createIssuer(@Valid @RequestBody CreateFacultyRequest request) {
-        FacultyResponse faculty = service.createIssuer(request);
+    public ResponseEntity<ApiResponse<FacultyResponse>> createFaculty(@Valid @RequestBody CreateFacultyRequest request) {
+        FacultyResponse faculty = service.createFaculty(request);
         ApiResponse<FacultyResponse> response = ApiResponse.<FacultyResponse>builder()
                 .message(ResponseMessage.SUCCESSFUL)
                 .status(HttpStatus.OK.value()).data(faculty).error("").build();
@@ -31,8 +31,8 @@ public class FacultyController {
     }
 
     @GetMapping(path = "")
-    public ResponseEntity<ApiResponse<Pagination<FacultyResponse>>> queryIssuer(FacultyFilterRequest request) {
-        Pagination<FacultyResponse> newCorp = service.queryIssuer(request);
+    public ResponseEntity<ApiResponse<Pagination<FacultyResponse>>> fetchDepartment(FacultyFilterRequest request) {
+        Pagination<FacultyResponse> newCorp = service.fetchDepartment(request);
         ApiResponse<Pagination<FacultyResponse>> response = ApiResponse.<Pagination<FacultyResponse>>builder()
                 .message(ResponseMessage.SUCCESSFUL)
                 .status(HttpStatus.OK.value()).data(newCorp).error("").build();

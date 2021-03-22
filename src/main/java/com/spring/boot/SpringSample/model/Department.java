@@ -18,4 +18,6 @@ public class Department {
     @Size(max = 255)
     @Column(name = "head_of_faculty")
     String HOD;
+    @Column(name = "faculty_id")
+    Long facultyId;
 }
